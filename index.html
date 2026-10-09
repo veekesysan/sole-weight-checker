@@ -162,9 +162,9 @@
 
                     <div class="flex items-center space-x-3">
                         <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 live-pulse"></span>
+                            <span id="syncStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 live-pulse"></span>
                             <span class="text-slate-400 font-medium hidden md:inline">Mode:</span>
-                            <span class="text-emerald-400 font-mono-code font-bold">Local Engine</span>
+                            <span id="syncStatusText" class="text-emerald-400 font-mono-code font-bold">Cloud Sync</span>
                         </div>
 
                         <button id="uploadExcelBtn" onclick="openExcelUploadModal()" class="hidden bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
@@ -561,7 +561,7 @@
                 <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-400"></i>
                 <div>
                     <p class="text-sm font-bold text-slate-200">Click to select or drag & drop file here</p>
-                    <p class="text-xs text-slate-500 mt-1">Processed directly inside browser</p>
+                    <p class="text-xs text-slate-500 mt-1">Processed directly inside browser & automatically synced to cloud</p>
                 </div>
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" onchange="handleFileSelect(event)" class="hidden">
             </div>
@@ -592,40 +592,9 @@
             { mouldNo: "M-4028", materialNo: "MAT-8920", soleWeight: 290.0, unit: "g", imcColor: "Beige" }
         ];
 
-        
-        let masterDataset = [...defaultMasterDataset];
-let currentFilteredDataset = [...masterDataset];
-let shiftLogs = JSON.parse(localStorage.getItem('san_shift_logs')) || [];
-
-// Auto-fetch repo database on startup
-async function loadRepositoryDatabase() {
-    try {
-        const response = await fetch('master_data.json?v=' + Date.now()); // cache-buster ensures latest updates load
-        if (response.ok) {
-            const data = await response.json();
-            if (Array.isArray(data) && data.length > 0) {
-                masterDataset = data;
-                currentFilteredDataset = [...masterDataset];
-                localStorage.setItem('san_master_dataset', JSON.stringify(masterDataset));
-                renderMasterTable();
-                return;
-            }
-        }
-    } catch (err) {
-        console.warn("Could not fetch master_data.json, falling back to local cache:", err);
-    }
-
-    // Fallback if offline
-    const cached = localStorage.getItem('san_master_dataset');
-    if (cached) {
-        masterDataset = JSON.parse(cached);
-        currentFilteredDataset = [...masterDataset];
-    }
-    renderMasterTable();
-}
-
-// Call immediately on page load
-loadRepositoryDatabase();
+        let masterDataset = JSON.parse(localStorage.getItem('san_master_dataset')) || [...defaultMasterDataset];
+        let currentFilteredDataset = [...masterDataset];
+        let shiftLogs = JSON.parse(localStorage.getItem('san_shift_logs')) || [];
 
         let sessionUser = {
             name: "",
@@ -641,6 +610,40 @@ loadRepositoryDatabase();
         };
 
         let activeSelectedSole = null;
+
+        // Auto-fetch latest tolerance and dataset from Google Sheets
+        async function syncLatestCloudData() {
+            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) return;
+
+            try {
+                const response = await fetch(GOOGLE_SHEET_WEBAPP_URL);
+                if (response.ok) {
+                    const res = await response.json();
+                    if (res.status === "success") {
+                        if (res.tolerance && res.tolerance.value) {
+                            toleranceConfig = res.tolerance;
+                            localStorage.setItem('san_tolerance_config', JSON.stringify(toleranceConfig));
+                            const tolInput = document.getElementById('toleranceValInput');
+                            const tolSelect = document.getElementById('toleranceUnitSelect');
+                            if (tolInput) tolInput.value = toleranceConfig.value;
+                            if (tolSelect) tolSelect.value = toleranceConfig.unit;
+                            updateToleranceDisplay();
+                        }
+
+                        if (res.masterData && Array.isArray(res.masterData) && res.masterData.length > 0) {
+                            masterDataset = res.masterData;
+                            currentFilteredDataset = [...masterDataset];
+                            localStorage.setItem('san_master_dataset', JSON.stringify(masterDataset));
+                            renderMasterTable();
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Using offline cached data. Cloud check failed:", err);
+            }
+        }
+
+        syncLatestCloudData();
 
         function handleLoginSubmit(event) {
             event.preventDefault();
@@ -757,6 +760,20 @@ loadRepositoryDatabase();
                 localStorage.setItem('san_tolerance_config', JSON.stringify(toleranceConfig));
                 updateToleranceDisplay();
                 renderMasterTable();
+
+                // Push new tolerance to Google Sheets
+                if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) {
+                    fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain" },
+                        body: JSON.stringify({
+                            action: "update_tolerance",
+                            value: toleranceConfig.value,
+                            unit: toleranceConfig.unit
+                        })
+                    }).catch(err => console.error(err));
+                }
             }
         }
 
@@ -978,6 +995,7 @@ loadRepositoryDatabase();
             const isPass = Math.abs(diff) <= allowedTolGrams;
 
             const logEntry = {
+                action: "log_inspection",
                 timestamp: new Date().toLocaleString(),
                 mouldNo: activeSelectedSole.mouldNo,
                 materialNo: activeSelectedSole.materialNo,
@@ -1221,7 +1239,22 @@ loadRepositoryDatabase();
 
                 renderMasterTable();
                 closeExcelUploadModal();
-                showToast(`Loaded ${parsed.length} soles from "${file.name}"!`, 'success');
+                showToast(`Loaded ${parsed.length} soles. Syncing to Google Sheets...`, 'info');
+
+                // Sync new dataset to Google Sheets so all devices get it
+                if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) {
+                    fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain" },
+                        body: JSON.stringify({
+                            action: "update_master_dataset",
+                            data: parsed
+                        })
+                    }).then(() => {
+                        showToast(`Dataset synced to cloud successfully!`, 'success');
+                    }).catch(err => console.error(err));
+                }
 
             } catch (err) {
                 console.error(err);
