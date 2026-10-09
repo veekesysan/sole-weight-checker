@@ -194,87 +194,88 @@
         <!-- MAIN DASHBOARD CONTENT -->
         <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <!-- 4 CARDS GRID: 2x2 ON MOBILE (SQUARE-LIKE), 4 COLUMNS ON DESKTOP -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 
                 <!-- CARD 1: NAME -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition aspect-square sm:aspect-auto">
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block">Name</span>
-                            <button onclick="logoutToLoginScreen()" title="Switch Inspector" class="text-slate-500 hover:text-cyan-400 text-xs transition p-1">
+                            <span class="text-[11px] sm:text-xs font-bold text-cyan-400 uppercase tracking-wider block">Name</span>
+                            <button onclick="logoutToLoginScreen()" title="Switch Inspector" class="text-slate-500 hover:text-cyan-400 text-xs transition p-0.5">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             </button>
                         </div>
-                        <h3 id="cardInspectorName" class="text-base sm:text-lg font-extrabold text-white truncate">Arvind</h3>
+                        <h3 id="cardInspectorName" class="text-sm sm:text-lg font-extrabold text-white truncate">Arvind</h3>
                     </div>
                     
-                    <div class="mt-2.5 pt-2 border-t border-slate-800/80">
-                        <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">Role / Department</span>
-                        <div id="cardRoleText" class="text-xs font-bold text-cyan-300">Shift In Charge</div>
+                    <div class="mt-2 pt-1.5 sm:pt-2 border-t border-slate-800/80">
+                        <span class="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">Role / Dept</span>
+                        <div id="cardRoleText" class="text-[11px] sm:text-xs font-bold text-cyan-300 truncate">Shift In Charge</div>
                     </div>
                 </div>
 
                 <!-- CARD 2: MACHINE NAME -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-indigo-500 hover:border-slate-700 transition">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-indigo-500 hover:border-slate-700 transition aspect-square sm:aspect-auto">
                     <div>
-                        <div class="flex items-center justify-between mb-1.5 sm:mb-2">
-                            <label for="cardMachineInput" class="text-xs font-bold text-indigo-400 uppercase tracking-wider block">Machine Name</label>
+                        <div class="flex items-center justify-between mb-1 sm:mb-2">
+                            <label for="cardMachineInput" class="text-[11px] sm:text-xs font-bold text-indigo-400 uppercase tracking-wider block">Machine</label>
                             <i class="fa-solid fa-microchip text-slate-500 text-xs"></i>
                         </div>
                         <input type="text" id="cardMachineInput" oninput="updateSessionMachine(this.value)"
-                            placeholder="Type Machine Name (e.g. G5)"
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus:border-indigo-500 transition">
+                            placeholder="e.g. G5"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-bold text-white focus:outline-none focus:border-indigo-500 transition">
                     </div>
-                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                    <div class="mt-2 pt-1.5 sm:pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400">
                         <span>Machine ID</span>
-                        <span class="text-emerald-400 font-medium"><i class="fa-solid fa-check text-[10px]"></i> Active</span>
+                        <span class="text-emerald-400 font-medium"><i class="fa-solid fa-check text-[9px]"></i> Active</span>
                     </div>
                 </div>
 
                 <!-- CARD 3: OPERATOR NAME -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-emerald-500 hover:border-slate-700 transition">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-emerald-500 hover:border-slate-700 transition aspect-square sm:aspect-auto">
                     <div>
-                        <div class="flex items-center justify-between mb-1.5 sm:mb-2">
-                            <label for="cardOperatorInput" class="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Operator Name</label>
+                        <div class="flex items-center justify-between mb-1 sm:mb-2">
+                            <label for="cardOperatorInput" class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider block">Operator</label>
                             <i class="fa-solid fa-user-gear text-slate-500 text-xs"></i>
                         </div>
                         <input type="text" id="cardOperatorInput" oninput="updateSessionOperator(this.value)"
-                            placeholder="Type Operator Name (e.g. Ranjith)"
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500 transition">
+                            placeholder="e.g. Ranjith"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-bold text-white focus:outline-none focus:border-emerald-500 transition">
                     </div>
-                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                    <div class="mt-2 pt-1.5 sm:pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400">
                         <span>Operator</span>
                         <span class="text-slate-400">Production</span>
                     </div>
                 </div>
 
-                <!-- CARD 4: TOLERANCE (Strictly accepts 0 and any positive value) -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition relative">
+                <!-- CARD 4: TOLERANCE -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition relative aspect-square sm:aspect-auto">
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Tolerance Settings</span>
-                            <span id="toleranceLockBadge" onclick="triggerAdminUnlockPrompt()" class="cursor-pointer text-[10px] font-bold uppercase tracking-wider bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded flex items-center space-x-1">
-                                <i class="fa-solid fa-lock text-[9px]"></i>
-                                <span id="toleranceLockText">LOCKED</span>
+                        <div class="flex items-center justify-between mb-1.5 sm:mb-2">
+                            <span class="text-[11px] sm:text-xs font-bold text-amber-400 uppercase tracking-wider block">Tolerance</span>
+                            <span id="toleranceLockBadge" onclick="triggerAdminUnlockPrompt()" class="cursor-pointer text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-rose-950 text-rose-300 border border-rose-800 px-1.5 sm:px-2 py-0.5 rounded flex items-center space-x-1">
+                                <i class="fa-solid fa-lock text-[8px] sm:text-[9px]"></i>
+                                <span id="toleranceLockText">LOCK</span>
                             </span>
                         </div>
                         
-                        <div class="flex items-center space-x-2">
-                            <span class="text-lg sm:text-xl font-bold font-mono-code text-amber-400">±</span>
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <span class="text-base sm:text-xl font-bold font-mono-code text-amber-400">±</span>
                             <input type="number" id="toleranceValInput" value="0" step="0.1" min="0" disabled
                                 onchange="handleToleranceChange()" oninput="handleToleranceChange()"
-                                class="w-20 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-sm sm:text-base font-bold font-mono-code text-amber-400 focus:outline-none focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                                class="w-14 sm:w-20 bg-slate-950 border border-slate-800 rounded-lg px-1.5 sm:px-2.5 py-1 text-xs sm:text-base font-bold font-mono-code text-amber-400 focus:outline-none focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed">
                             <select id="toleranceUnitSelect" disabled onchange="handleToleranceChange()" 
-                                class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono-code text-amber-400 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
-                                <option value="g">grams (g)</option>
-                                <option value="%">percent (%)</option>
+                                class="bg-slate-950 border border-slate-800 rounded-lg px-1 sm:px-2 py-1 text-[10px] sm:text-xs font-mono-code text-amber-400 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
+                                <option value="g">g</option>
+                                <option value="%">%</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
-                        <span id="toleranceLockNote">Only admin can edit this</span>
-                        <span class="text-amber-400 font-mono-code font-semibold" id="toleranceCardDisplay">±0g Limit</span>
+                    <div class="mt-2 pt-1.5 sm:pt-2 border-t border-slate-800/80 text-[10px] sm:text-[11px] text-slate-400 flex items-center justify-between">
+                        <span id="toleranceLockNote" class="truncate text-[9px] sm:text-[11px]">Only admin</span>
+                        <span class="text-amber-400 font-mono-code font-semibold text-[10px] sm:text-xs" id="toleranceCardDisplay">±0g</span>
                     </div>
                 </div>
 
@@ -403,7 +404,7 @@
         </main>
     </div>
 
-    <!-- 3. INSPECTION MODAL (MOBILE FIXED: PINNED HEADER & FOOTER, TOUCH SCROLLABLE BODY) -->
+    <!-- 3. INSPECTION MODAL (PINNED FOOTER & TOUCH SCROLLABLE) -->
     <div id="inspectionModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200">
         <div id="modalCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-200 overflow-hidden my-auto">
             
@@ -625,7 +626,6 @@
             isAdmin: false
         };
 
-        // Initialize tolerance config (accepts 0 cleanly)
         let toleranceConfig = JSON.parse(localStorage.getItem('san_tolerance_config')) || {
             value: 0,
             unit: "g"
@@ -633,7 +633,6 @@
 
         let activeSelectedSole = null;
 
-        // Auto-fetch latest tolerance and dataset from Google Sheets
         async function syncLatestCloudData() {
             if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) return;
 
@@ -642,7 +641,6 @@
                 if (response.ok) {
                     const res = await response.json();
                     if (res.status === "success") {
-                        // Strict check so 0 is NOT ignored
                         if (res.tolerance && res.tolerance.value !== undefined && res.tolerance.value !== null && !isNaN(res.tolerance.value)) {
                             toleranceConfig = {
                                 value: Number(res.tolerance.value),
@@ -744,9 +742,9 @@
 
                 tolInput.disabled = false;
                 tolSelect.disabled = false;
-                tolBadge.className = "cursor-pointer text-[10px] font-bold uppercase tracking-wider bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded flex items-center space-x-1";
-                tolText.innerText = "UNLOCKED";
-                tolNote.innerText = "Editable by Admin";
+                tolBadge.className = "cursor-pointer text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 sm:px-2 py-0.5 rounded flex items-center space-x-1";
+                tolText.innerText = "OPEN";
+                tolNote.innerText = "Admin edit";
             } else {
                 roleBadge.className = "cursor-pointer bg-slate-950 border border-slate-800 hover:border-slate-700 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition";
                 roleLabel.innerText = "User (Locked)";
@@ -755,9 +753,9 @@
 
                 tolInput.disabled = true;
                 tolSelect.disabled = true;
-                tolBadge.className = "cursor-pointer text-[10px] font-bold uppercase tracking-wider bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded flex items-center space-x-1";
-                tolText.innerText = "LOCKED";
-                tolNote.innerText = "Only admin can edit this";
+                tolBadge.className = "cursor-pointer text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-rose-950 text-rose-300 border border-rose-800 px-1.5 sm:px-2 py-0.5 rounded flex items-center space-x-1";
+                tolText.innerText = "LOCK";
+                tolNote.innerText = "Only admin";
             }
         }
 
@@ -781,7 +779,6 @@
             const val = parseFloat(document.getElementById('toleranceValInput').value);
             const unit = document.getElementById('toleranceUnitSelect').value;
 
-            // Permits 0 and all positive numbers
             if (!isNaN(val) && val >= 0) {
                 toleranceConfig.value = val;
                 toleranceConfig.unit = unit;
@@ -806,7 +803,7 @@
 
         function updateToleranceDisplay() {
             const display = document.getElementById('toleranceCardDisplay');
-            display.innerText = `±${toleranceConfig.value}${toleranceConfig.unit} Limit`;
+            display.innerText = `±${toleranceConfig.value}${toleranceConfig.unit}`;
         }
 
         function renderMasterTable() {
@@ -984,14 +981,12 @@
             const diff = inputVal - sysWt;
             const percentDev = (diff / sysWt) * 100;
             
-            // Floating point tolerance check (handles 0 cleanly)
             const isWithinTolerance = Math.abs(diff) <= (allowedTolGrams + 0.0001);
 
             const sign = diff >= 0 ? "+" : "";
             deltaGrams.innerText = `${sign}${diff.toFixed(1)} ${activeSelectedSole.unit}`;
             deltaPercent.innerText = `(${sign}${percentDev.toFixed(2)}%)`;
 
-            // Avoid division by zero when allowed tolerance is 0
             const maxRange = (allowedTolGrams > 0 ? allowedTolGrams : 2.5) * 2.5;
             let gaugePct = 50 + (diff / maxRange) * 50;
             gaugePct = Math.max(5, Math.min(95, gaugePct));
