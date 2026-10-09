@@ -592,9 +592,40 @@
             { mouldNo: "M-4028", materialNo: "MAT-8920", soleWeight: 290.0, unit: "g", imcColor: "Beige" }
         ];
 
-        let masterDataset = JSON.parse(localStorage.getItem('san_master_dataset')) || [...defaultMasterDataset];
-        let currentFilteredDataset = [...masterDataset];
-        let shiftLogs = JSON.parse(localStorage.getItem('san_shift_logs')) || [];
+        
+        let masterDataset = [...defaultMasterDataset];
+let currentFilteredDataset = [...masterDataset];
+let shiftLogs = JSON.parse(localStorage.getItem('san_shift_logs')) || [];
+
+// Auto-fetch repo database on startup
+async function loadRepositoryDatabase() {
+    try {
+        const response = await fetch('master_data.json?v=' + Date.now()); // cache-buster ensures latest updates load
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                masterDataset = data;
+                currentFilteredDataset = [...masterDataset];
+                localStorage.setItem('san_master_dataset', JSON.stringify(masterDataset));
+                renderMasterTable();
+                return;
+            }
+        }
+    } catch (err) {
+        console.warn("Could not fetch master_data.json, falling back to local cache:", err);
+    }
+
+    // Fallback if offline
+    const cached = localStorage.getItem('san_master_dataset');
+    if (cached) {
+        masterDataset = JSON.parse(cached);
+        currentFilteredDataset = [...masterDataset];
+    }
+    renderMasterTable();
+}
+
+// Call immediately on page load
+loadRepositoryDatabase();
 
         let sessionUser = {
             name: "",
