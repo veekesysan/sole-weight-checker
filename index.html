@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sole Weight Checker SAN</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,13 +37,21 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
         .font-mono-code { font-family: 'JetBrains Mono', monospace; }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080c14; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        .modal-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
         
         .live-pulse {
             box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -62,22 +70,23 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col bg-grid-pattern selection:bg-cyan-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col bg-grid-pattern selection:bg-cyan-500 selection:text-white antialiased">
 
-    <div id="loginScreen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+    <!-- 1. LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative overflow-hidden space-y-5 my-auto">
             
             <div class="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
             
-            <div class="text-center space-y-2">
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 shadow-lg shadow-cyan-500/20 text-white text-2xl font-bold mb-1">
+            <div class="text-center space-y-1.5">
+                <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 shadow-lg shadow-cyan-500/20 text-white text-xl sm:text-2xl font-bold mb-1">
                     <i class="fa-solid fa-weight-scale"></i>
                 </div>
-                <h2 class="text-2xl font-extrabold text-white tracking-tight">Sole Weight Checker SAN</h2>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Sole Weight Checker SAN</h2>
                 <p class="text-xs text-slate-400 font-medium">Shift Inspection Entry</p>
             </div>
 
-            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5 sm:space-y-4">
                 <div>
                     <label for="loginName" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
                         Name <span class="text-rose-400">*</span>
@@ -87,7 +96,7 @@
                             <i class="fa-solid fa-user-pen text-xs"></i>
                         </span>
                         <input type="text" id="loginName" required placeholder="e.g. Arvind"
-                            class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                            class="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
                     </div>
                 </div>
 
@@ -100,7 +109,7 @@
                             <i class="fa-solid fa-id-badge text-xs"></i>
                         </span>
                         <select id="loginRole" required
-                            class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-cyan-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                            class="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-cyan-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
                             <option value="Shift In Charge" selected>Shift In Charge</option>
                             <option value="Quality">Quality</option>
                         </select>
@@ -116,7 +125,7 @@
                             <i class="fa-solid fa-microchip text-xs"></i>
                         </span>
                         <input type="text" id="loginMachine" required placeholder="e.g. G5"
-                            class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-indigo-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                            class="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-indigo-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
                     </div>
                 </div>
 
@@ -129,7 +138,7 @@
                             <i class="fa-solid fa-user-gear text-xs"></i>
                         </span>
                         <input type="text" id="loginOperator" required placeholder="e.g. Ranjith"
-                            class="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-emerald-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                            class="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-semibold text-emerald-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
                     </div>
                 </div>
 
@@ -142,39 +151,41 @@
         </div>
     </div>
 
+    <!-- 2. MAIN DASHBOARD WRAPPER -->
     <div id="mainDashboard" class="hidden flex-col min-h-screen">
 
+        <!-- Top Header Bar -->
         <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30 shadow-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between min-h-[56px] sm:h-16 py-2 sm:py-0">
                     
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
-                            <i class="fa-solid fa-weight-scale text-lg"></i>
+                    <!-- Branding -->
+                    <div class="flex items-center space-x-2.5 sm:space-x-3">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white flex-shrink-0">
+                            <i class="fa-solid fa-weight-scale text-base sm:text-lg"></i>
                         </div>
                         <div>
-                            <div class="flex items-center space-x-2">
-                                <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">SOLE WEIGHT CHECKER <span class="text-cyan-400">SAN</span></h1>
-                            </div>
-                            <p class="text-[11px] text-slate-400 hidden sm:block">Industrial Quality Inspection & Machine Verification</p>
+                            <h1 class="text-xs sm:text-base font-extrabold tracking-tight text-white leading-tight">SOLE WEIGHT CHECKER <span class="text-cyan-400">SAN</span></h1>
+                            <p class="text-[10px] text-slate-400 hidden sm:block">Industrial Quality Inspection & Machine Verification</p>
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-3">
-                        <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
-                            <span id="syncStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 live-pulse"></span>
+                    <!-- Right Controls -->
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <div class="flex items-center space-x-1.5 sm:space-x-2 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-[11px] sm:text-xs">
+                            <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 live-pulse"></span>
                             <span class="text-slate-400 font-medium hidden md:inline">Mode:</span>
-                            <span id="syncStatusText" class="text-emerald-400 font-mono-code font-bold">Cloud Sync</span>
+                            <span id="syncStatusText" class="text-emerald-400 font-mono-code font-bold text-[10px] sm:text-xs">Cloud Sync</span>
                         </div>
 
-                        <button id="uploadExcelBtn" onclick="openExcelUploadModal()" class="hidden bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-file-import"></i>
+                        <button id="uploadExcelBtn" onclick="openExcelUploadModal()" class="hidden bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-file-import text-xs"></i>
                             <span class="hidden sm:inline">Upload Excel</span>
                         </button>
 
-                        <div id="accountRoleBadge" onclick="triggerAdminUnlockPrompt()" class="cursor-pointer bg-slate-950 border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition">
-                            <i id="accountLockIcon" class="fa-solid fa-lock text-rose-400"></i>
-                            <span id="accountRoleLabel" class="text-slate-300">User (Locked)</span>
+                        <div id="accountRoleBadge" onclick="triggerAdminUnlockPrompt()" class="cursor-pointer bg-slate-950 border border-slate-800 hover:border-slate-700 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition">
+                            <i id="accountLockIcon" class="fa-solid fa-lock text-rose-400 text-xs"></i>
+                            <span id="accountRoleLabel" class="text-slate-300 text-[11px] sm:text-xs">User (Locked)</span>
                         </div>
                     </div>
 
@@ -182,30 +193,34 @@
             </div>
         </header>
 
-        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 4 CARDS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition">
+                <!-- CARD 1: NAME -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition">
                     <div>
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block">Name</span>
-                            <button onclick="logoutToLoginScreen()" title="Switch Inspector" class="text-slate-500 hover:text-cyan-400 text-xs transition">
+                            <button onclick="logoutToLoginScreen()" title="Switch Inspector" class="text-slate-500 hover:text-cyan-400 text-xs transition p-1">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             </button>
                         </div>
-                        <h3 id="cardInspectorName" class="text-lg font-extrabold text-white truncate">Arvind</h3>
+                        <h3 id="cardInspectorName" class="text-base sm:text-lg font-extrabold text-white truncate">Arvind</h3>
                     </div>
                     
-                    <div class="mt-3 pt-2 border-t border-slate-800/80">
+                    <div class="mt-2.5 pt-2 border-t border-slate-800/80">
                         <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">Role / Department</span>
                         <div id="cardRoleText" class="text-xs font-bold text-cyan-300">Shift In Charge</div>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-sm focus-within:border-indigo-500 hover:border-slate-700 transition">
+                <!-- CARD 2: MACHINE NAME -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-indigo-500 hover:border-slate-700 transition">
                     <div>
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <label for="cardMachineInput" class="text-xs font-bold text-indigo-400 uppercase tracking-wider block">Machine Name</label>
                             <i class="fa-solid fa-microchip text-slate-500 text-xs"></i>
                         </div>
@@ -213,15 +228,16 @@
                             placeholder="Type Machine Name (e.g. G5)"
                             class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus:border-indigo-500 transition">
                     </div>
-                    <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                        <span>Direct typable machine ID</span>
+                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                        <span>Machine ID</span>
                         <span class="text-emerald-400 font-medium"><i class="fa-solid fa-check text-[10px]"></i> Active</span>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-sm focus-within:border-emerald-500 hover:border-slate-700 transition">
+                <!-- CARD 3: OPERATOR NAME -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm focus-within:border-emerald-500 hover:border-slate-700 transition">
                     <div>
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center justify-between mb-1.5 sm:mb-2">
                             <label for="cardOperatorInput" class="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Operator Name</label>
                             <i class="fa-solid fa-user-gear text-slate-500 text-xs"></i>
                         </div>
@@ -229,13 +245,14 @@
                             placeholder="Type Operator Name (e.g. Ranjith)"
                             class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500 transition">
                     </div>
-                    <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                        <span>Direct typable operator</span>
-                        <span class="text-slate-400">Machine Operator</span>
+                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                        <span>Operator</span>
+                        <span class="text-slate-400">Production</span>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition relative">
+                <!-- CARD 4: TOLERANCE -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:border-slate-700 transition relative">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Tolerance Settings</span>
@@ -246,10 +263,10 @@
                         </div>
                         
                         <div class="flex items-center space-x-2">
-                            <span class="text-xl font-bold font-mono-code text-amber-400">±</span>
+                            <span class="text-lg sm:text-xl font-bold font-mono-code text-amber-400">±</span>
                             <input type="number" id="toleranceValInput" value="2.5" step="0.1" min="0.1" disabled
                                 onchange="handleToleranceChange()" oninput="handleToleranceChange()"
-                                class="w-20 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-base font-bold font-mono-code text-amber-400 focus:outline-none focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                                class="w-20 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-sm sm:text-base font-bold font-mono-code text-amber-400 focus:outline-none focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed">
                             <select id="toleranceUnitSelect" disabled onchange="handleToleranceChange()" 
                                 class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono-code text-amber-400 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
                                 <option value="g">grams (g)</option>
@@ -258,7 +275,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-3 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+                    <div class="mt-2.5 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
                         <span id="toleranceLockNote">Only admin can edit this</span>
                         <span class="text-amber-400 font-mono-code font-semibold" id="toleranceCardDisplay">±2.5g Limit</span>
                     </div>
@@ -266,49 +283,48 @@
 
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    
+            <!-- SEARCHBAR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 space-y-3">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-4">
                     <div class="relative flex-1">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </div>
                         <input type="text" id="globalSearchInput" oninput="handleSearch()" 
                             placeholder="Search by Mould No, Material No (e.g. 1332 blk), IMC Color..." 
-                            class="w-full pl-10 pr-10 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
+                            class="w-full pl-9 pr-9 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition">
                         <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white">
-                            <i class="fa-solid fa-xmark"></i>
+                            <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
 
-                    <div class="flex items-center space-x-2">
-                        <button onclick="resetSearch()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-rotate"></i>
-                            <span>Reset Search</span>
-                        </button>
-                    </div>
+                    <button onclick="resetSearch()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-center space-x-1.5 flex-shrink-0">
+                        <i class="fa-solid fa-rotate text-xs"></i>
+                        <span>Reset Search</span>
+                    </button>
                 </div>
             </div>
 
+            <!-- MASTER DATASET TABLE -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-                <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+                <div class="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-table text-cyan-400 text-sm"></i>
-                        <h2 class="text-sm font-bold text-slate-200">Master Dataset</h2>
-                        <span id="recordCountBadge" class="bg-slate-800 text-cyan-300 text-xs font-mono-code px-2 py-0.5 rounded-full border border-slate-700">0 Soles Loaded</span>
+                        <h2 class="text-xs sm:text-sm font-bold text-slate-200">Master Dataset</h2>
+                        <span id="recordCountBadge" class="bg-slate-800 text-cyan-300 text-[11px] sm:text-xs font-mono-code px-2 py-0.5 rounded-full border border-slate-700">0 Soles Loaded</span>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto overflow-y-auto max-h-[380px]">
-                    <table class="w-full text-center border-collapse text-sm">
-                        <thead class="sticky top-0 bg-slate-950/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider font-semibold">
+                <div class="overflow-x-auto overflow-y-auto max-h-[360px] sm:max-h-[380px]">
+                    <table class="w-full text-center border-collapse text-xs sm:text-sm">
+                        <thead class="sticky top-0 bg-slate-950/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 text-[11px] sm:text-xs uppercase tracking-wider font-semibold">
                             <tr>
-                                <th class="py-3 px-4 text-center">Mould No</th>
-                                <th class="py-3 px-4 text-center">Material No</th>
-                                <th class="py-3 px-4 text-center">Sole Weight</th>
-                                <th class="py-3 px-4 text-center">Unit</th>
-                                <th class="py-3 px-4 text-center">IMC Color</th>
-                                <th class="py-3 px-4 text-center">Action</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">Mould No</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">Material No</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">Sole Weight</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">Unit</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">IMC Color</th>
+                                <th class="py-2.5 px-3 text-center whitespace-nowrap">Action</th>
                             </tr>
                         </thead>
                         <tbody id="soleTableBody" class="divide-y divide-slate-800/60 text-slate-200">
@@ -316,175 +332,187 @@
                     </table>
                 </div>
 
-                <div id="emptySearchState" class="hidden py-12 text-center text-slate-400 space-y-3">
-                    <i class="fa-solid fa-magnifying-glass-slash text-4xl text-slate-600"></i>
-                    <p class="text-base font-medium text-slate-300">No matching sole specifications found in master dataset.</p>
-                    <button onclick="resetSearch()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs px-4 py-2 rounded-lg border border-slate-700">
+                <div id="emptySearchState" class="hidden py-10 text-center text-slate-400 space-y-2.5">
+                    <i class="fa-solid fa-magnifying-glass-slash text-3xl text-slate-600"></i>
+                    <p class="text-xs sm:text-sm font-medium text-slate-300">No matching sole specifications found.</p>
+                    <button onclick="resetSearch()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs px-3.5 py-1.5 rounded-lg border border-slate-700">
                         Clear Search Query
                     </button>
                 </div>
             </div>
 
+            <!-- SHIFT HISTORY INSPECTION LOG -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-                <div class="px-5 py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-900/80">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                            <i class="fa-solid fa-clipboard-check"></i>
+                <div class="px-4 py-3.5 sm:px-5 sm:py-4 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900/80">
+                    <div class="flex items-center space-x-2.5 sm:space-x-3">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-clipboard-check text-xs sm:text-sm"></i>
                         </div>
                         <div>
-                            <h2 class="text-sm font-bold text-slate-100">Shift Weight Inspection History Log</h2>
-                            <p class="text-xs text-slate-400">Live inspection records saved in your local browser storage</p>
+                            <h2 class="text-xs sm:text-sm font-bold text-slate-100">Shift Weight Inspection History Log</h2>
+                            <p class="text-[10px] sm:text-xs text-slate-400">Live inspection records saved in your local session</p>
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-3">
-                        <div class="hidden sm:flex items-center space-x-3 text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 font-mono-code">
-                            <span class="text-slate-400">Total: <strong id="statTotal" class="text-white">0</strong></span>
+                    <div class="flex items-center flex-wrap gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                        <div class="flex items-center space-x-2 text-[11px] bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono-code">
+                            <span class="text-slate-400">T: <strong id="statTotal" class="text-white">0</strong></span>
                             <span class="text-slate-700">|</span>
-                            <span class="text-emerald-400">Pass: <strong id="statPass">0</strong></span>
+                            <span class="text-emerald-400">P: <strong id="statPass">0</strong></span>
                             <span class="text-slate-700">|</span>
-                            <span class="text-rose-400">Reject: <strong id="statReject">0</strong></span>
+                            <span class="text-rose-400">R: <strong id="statReject">0</strong></span>
                         </div>
 
-                        <button onclick="clearAllLogsPrompt()" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition">
-                            <i class="fa-solid fa-trash-can mr-1"></i> Clear Logs
-                        </button>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="clearAllLogsPrompt()" class="bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium transition">
+                                <i class="fa-solid fa-trash-can mr-1 text-[10px]"></i> Clear
+                            </button>
 
-                        <button onclick="exportCSVLog()" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-md shadow-cyan-500/10 transition flex items-center space-x-1.5">
-                            <i class="fa-solid fa-file-csv"></i>
-                            <span>Export CSV Log</span>
-                        </button>
+                            <button onclick="exportCSVLog()" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-md shadow-cyan-500/10 transition flex items-center space-x-1">
+                                <i class="fa-solid fa-file-csv text-xs"></i>
+                                <span>CSV</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto overflow-y-auto max-h-[320px]">
-                    <table class="w-full text-center border-collapse text-sm">
-                        <thead class="sticky top-0 bg-slate-950/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 text-[11px] uppercase tracking-wider font-semibold">
+                <div class="overflow-x-auto overflow-y-auto max-h-[300px] sm:max-h-[320px]">
+                    <table class="w-full text-center border-collapse text-xs">
+                        <thead class="sticky top-0 bg-slate-950/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold">
                             <tr>
-                                <th class="py-2.5 px-4 text-center">Time</th>
-                                <th class="py-2.5 px-4 text-center">Mould / Material</th>
-                                <th class="py-2.5 px-4 text-center">IMC Color</th>
-                                <th class="py-2.5 px-4 text-center">Name</th>
-                                <th class="py-2.5 px-4 text-center">Role / Dept</th>
-                                <th class="py-2.5 px-4 text-center">Machine Name</th>
-                                <th class="py-2.5 px-4 text-center">Operator Name</th>
-                                <th class="py-2.5 px-4 text-center">System Wt</th>
-                                <th class="py-2.5 px-4 text-center">Machine Wt</th>
-                                <th class="py-2.5 px-4 text-center">Delta (&Delta;)</th>
-                                <th class="py-2.5 px-4 text-center">Status</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Time</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Mould / Material</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">IMC Color</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Name</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Role / Dept</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Machine Name</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Operator Name</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">System Wt</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Machine Wt</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Delta (&Delta;)</th>
+                                <th class="py-2 px-3 text-center whitespace-nowrap">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="historyLogBody" class="divide-y divide-slate-800/60 text-slate-300 font-mono-code text-xs">
+                        <tbody id="historyLogBody" class="divide-y divide-slate-800/60 text-slate-300 font-mono-code text-[11px]">
                         </tbody>
                     </table>
                 </div>
 
-                <div id="logEmptyState" class="py-8 text-center text-slate-500 text-xs">
-                    No machine weight tests logged yet. Click "Check Weight" on any row above to perform inspection.
+                <div id="logEmptyState" class="py-6 text-center text-slate-500 text-xs">
+                    No machine weight tests logged yet. Click "Check Weight" on any row above.
                 </div>
             </div>
 
         </main>
     </div>
 
-    <div id="inspectionModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-        <div id="modalCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-200">
+    <!-- 3. INSPECTION MODAL (MOBILE FIXED: PINNED HEADER & FOOTER, TOUCH SCROLLABLE BODY) -->
+    <div id="inspectionModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+        <div id="modalCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-200 overflow-hidden my-auto">
             
-            <div class="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full bg-cyan-400"></div>
+            <!-- Sticky Modal Header -->
+            <div class="px-4 py-3 sm:px-6 sm:py-3.5 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
                     <div>
                         <div class="flex items-center space-x-2">
-                            <h3 id="modalMouldNo" class="text-lg font-bold font-mono-code text-cyan-400">M-0000</h3>
-                            <span id="modalImcColor" class="text-xs bg-slate-800 text-slate-200 border border-slate-700 px-2 py-0.5 rounded font-bold">Black</span>
+                            <h3 id="modalMouldNo" class="text-base sm:text-lg font-bold font-mono-code text-cyan-400">M-0000</h3>
+                            <span id="modalImcColor" class="text-[10px] sm:text-xs bg-slate-800 text-slate-200 border border-slate-700 px-2 py-0.5 rounded font-bold">Black</span>
                         </div>
-                        <p id="modalMaterialNo" class="text-xs text-slate-400 font-mono-code">MAT-0000</p>
+                        <p id="modalMaterialNo" class="text-[10px] sm:text-xs text-slate-400 font-mono-code">MAT-0000</p>
                     </div>
                 </div>
-                <button onclick="closeInspectionModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-lg transition">
-                    <i class="fa-solid fa-xmark text-base"></i>
+                <button onclick="closeInspectionModal()" class="text-slate-400 hover:text-white bg-slate-800 p-1.5 sm:p-2 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-sm sm:text-base"></i>
                 </button>
             </div>
 
-            <div class="p-6 space-y-5">
+            <!-- Scrollable Modal Body (Always smoothly scrolls above footer) -->
+            <div class="flex-1 overflow-y-auto modal-scroll p-4 sm:p-6 space-y-3.5 sm:space-y-4">
 
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <!-- Meta bar -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 sm:p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                     <div>
-                        <span class="text-slate-500 uppercase text-[10px] tracking-wider block font-semibold">Name</span>
-                        <span id="modalInspectorName" class="font-bold text-cyan-300 truncate block">Arvind</span>
+                        <span class="text-slate-500 uppercase text-[9px] sm:text-[10px] tracking-wider block font-semibold">Name</span>
+                        <span id="modalInspectorName" class="font-bold text-cyan-300 truncate block text-[11px] sm:text-xs">Arvind</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 uppercase text-[10px] tracking-wider block font-semibold">Role / Dept</span>
-                        <span id="modalRole" class="font-bold text-slate-200 truncate block">Shift In Charge</span>
+                        <span class="text-slate-500 uppercase text-[9px] sm:text-[10px] tracking-wider block font-semibold">Role / Dept</span>
+                        <span id="modalRole" class="font-bold text-slate-200 truncate block text-[11px] sm:text-xs">Shift In Charge</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 uppercase text-[10px] tracking-wider block font-semibold">Machine Name</span>
-                        <span id="modalMachine" class="font-bold text-indigo-400 truncate block">G5</span>
+                        <span class="text-slate-500 uppercase text-[9px] sm:text-[10px] tracking-wider block font-semibold">Machine</span>
+                        <span id="modalMachine" class="font-bold text-indigo-400 truncate block text-[11px] sm:text-xs">G5</span>
                     </div>
                     <div>
-                        <span class="text-slate-500 uppercase text-[10px] tracking-wider block font-semibold">Operator Name</span>
-                        <span id="modalOperator" class="font-bold text-emerald-400 truncate block">Ranjith</span>
+                        <span class="text-slate-500 uppercase text-[9px] sm:text-[10px] tracking-wider block font-semibold">Operator</span>
+                        <span id="modalOperator" class="font-bold text-emerald-400 truncate block text-[11px] sm:text-xs">Ranjith</span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Weight Inputs Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between text-center">
+                    <!-- System Spec -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col justify-between text-center">
                         <div>
-                            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block">System Sole Weight Target</span>
-                            <span class="text-[10px] text-cyan-400 font-mono-code">(Specification Target)</span>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold block">Target Sole Weight</span>
+                            <span class="text-[9px] sm:text-[10px] text-cyan-400 font-mono-code">(Specification)</span>
                         </div>
-                        <div class="my-3">
-                            <div class="text-4xl font-extrabold text-cyan-400 font-mono-code" id="modalSystemWeight">0.0</div>
-                            <span class="text-xs text-slate-400 font-mono-code" id="modalSystemUnit">grams</span>
+                        <div class="my-2 sm:my-3">
+                            <div class="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono-code" id="modalSystemWeight">0.0</div>
+                            <span class="text-[11px] text-slate-400 font-mono-code" id="modalSystemUnit">grams</span>
                         </div>
-                        <div class="text-[11px] text-slate-400 border-t border-slate-900 pt-2">
-                            Allowed Specs: <span id="modalSpecRange" class="font-mono-code text-slate-200 font-bold">0.0g - 0.0g</span>
+                        <div class="text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-900 pt-1.5">
+                            Spec: <span id="modalSpecRange" class="font-mono-code text-slate-200 font-bold">0.0g - 0.0g</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-950 border border-cyan-500/40 rounded-xl p-4 flex flex-col justify-between text-center focus-within:border-cyan-400 transition">
+                    <!-- Machine Typed Weight & Keypad -->
+                    <div class="bg-slate-950 border border-cyan-500/40 rounded-xl p-3 sm:p-4 flex flex-col justify-between text-center focus-within:border-cyan-400 transition">
                         <div>
-                            <label for="manualWeightInput" class="text-xs uppercase tracking-wider text-slate-200 font-semibold block">
-                                Type Machine Weight <span class="text-rose-400">*</span>
+                            <label for="manualWeightInput" class="text-[11px] uppercase tracking-wider text-slate-200 font-semibold block">
+                                Machine Weight <span class="text-rose-400">*</span>
                             </label>
-                            <span class="text-[10px] text-slate-400">Type or tap quick keypad below</span>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400">Type or tap quick keypad below</span>
                         </div>
 
                         <div class="my-2 relative">
-                            <input type="number" id="manualWeightInput" step="0.1" placeholder="Type weight..." autocomplete="off" oninput="calculateLiveDelta()"
-                                class="w-full bg-slate-900 border-2 border-slate-700 rounded-lg py-2 px-3 text-center text-3xl font-bold font-mono-code text-white focus:outline-none focus:border-cyan-400 transition placeholder-slate-600 placeholder:text-sm">
-                            <span class="absolute right-3 bottom-3 text-xs text-slate-400 font-mono-code" id="modalTypedUnit">g</span>
+                            <input type="number" id="manualWeightInput" step="0.1" inputmode="decimal" placeholder="Type weight..." autocomplete="off" oninput="calculateLiveDelta()"
+                                class="w-full bg-slate-900 border-2 border-slate-700 rounded-lg py-1.5 sm:py-2 px-3 text-center text-2xl sm:text-3xl font-bold font-mono-code text-white focus:outline-none focus:border-cyan-400 transition placeholder-slate-600 placeholder:text-xs">
+                            <span class="absolute right-3 bottom-2 text-xs text-slate-400 font-mono-code" id="modalTypedUnit">g</span>
                         </div>
 
-                        <div class="grid grid-cols-5 gap-1 pt-1">
-                            <button onclick="adjustManualWeight(-1.0)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 rounded font-mono-code font-bold transition">-1</button>
-                            <button onclick="adjustManualWeight(-0.1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 rounded font-mono-code font-bold transition">-0.1</button>
-                            <button onclick="clearManualWeightInput()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs py-1.5 rounded font-mono-code font-extrabold transition">C</button>
-                            <button onclick="adjustManualWeight(+0.1)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 rounded font-mono-code font-bold transition">+0.1</button>
-                            <button onclick="adjustManualWeight(+1.0)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 rounded font-mono-code font-bold transition">+1</button>
+                        <!-- Touch Keypad -->
+                        <div class="grid grid-cols-5 gap-1 pt-0.5">
+                            <button onclick="adjustManualWeight(-1.0)" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs py-2 rounded font-mono-code font-bold transition">-1</button>
+                            <button onclick="adjustManualWeight(-0.1)" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs py-2 rounded font-mono-code font-bold transition">-0.1</button>
+                            <button onclick="clearManualWeightInput()" class="bg-rose-950/80 hover:bg-rose-900 active:bg-rose-800 text-rose-300 border border-rose-800 text-xs py-2 rounded font-mono-code font-extrabold transition">C</button>
+                            <button onclick="adjustManualWeight(+0.1)" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs py-2 rounded font-mono-code font-bold transition">+0.1</button>
+                            <button onclick="adjustManualWeight(+1.0)" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs py-2 rounded font-mono-code font-bold transition">+1</button>
                         </div>
                     </div>
 
                 </div>
 
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                <!-- Live Delta Gauge -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 sm:p-3.5 space-y-2.5">
                     <div class="flex items-center justify-between text-xs font-medium">
-                        <span class="text-slate-400">Weight Delta (&Delta; = Machine &minus; System):</span>
-                        <div class="flex items-center space-x-2">
-                            <span id="modalDeltaGrams" class="font-mono-code text-slate-200 font-bold text-sm">0.0 g</span>
-                            <span id="modalDeltaPercent" class="font-mono-code text-slate-500 text-[11px]">(0.0%)</span>
+                        <span class="text-slate-400 text-[11px] sm:text-xs">Weight Delta (&Delta; = Actual &minus; Target):</span>
+                        <div class="flex items-center space-x-1.5">
+                            <span id="modalDeltaGrams" class="font-mono-code text-slate-200 font-bold text-xs sm:text-sm">0.0 g</span>
+                            <span id="modalDeltaPercent" class="font-mono-code text-slate-500 text-[10px] sm:text-[11px]">(0.0%)</span>
                         </div>
                     </div>
 
-                    <div class="relative h-4 bg-slate-800 rounded-full overflow-hidden p-0.5 flex items-center">
+                    <div class="relative h-3.5 sm:h-4 bg-slate-800 rounded-full overflow-hidden p-0.5 flex items-center">
                         <div class="absolute h-full bg-emerald-500/30 border-x-2 border-emerald-400" style="left: 30%; width: 40%;"></div>
                         <div id="gaugePointer" class="absolute w-3 h-full bg-white rounded-full shadow-md shadow-black transition-all duration-150" style="left: 50%;"></div>
                     </div>
 
-                    <div class="flex items-center justify-between pt-1">
-                        <span class="text-xs text-slate-400">Verification Status:</span>
-                        <div id="statusBadge" class="bg-slate-800 text-slate-400 border border-slate-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5">
+                    <div class="flex items-center justify-between pt-0.5">
+                        <span class="text-[11px] text-slate-400">Result:</span>
+                        <div id="statusBadge" class="bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5">
                             <i class="fa-solid fa-circle-minus"></i>
                             <span>Type Machine Weight Above</span>
                         </div>
@@ -493,12 +521,13 @@
 
             </div>
 
-            <div class="px-6 py-3.5 border-t border-slate-800 bg-slate-950 flex items-center justify-end space-x-3">
-                <button onclick="closeInspectionModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 transition">
+            <!-- Sticky Modal Footer (NEVER CUT OFF ON MOBILE) -->
+            <div class="px-4 py-3 sm:px-6 sm:py-3.5 border-t border-slate-800 bg-slate-950 flex items-center justify-end space-x-2 sm:space-x-3 flex-shrink-0 z-10">
+                <button onclick="closeInspectionModal()" class="w-1/3 sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 transition">
                     Cancel
                 </button>
                 <button id="btnSubmitInspection" onclick="submitInspectionRecord()" disabled 
-                    class="px-5 py-2 rounded-lg text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed transition flex items-center space-x-2">
+                    class="w-2/3 sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed transition flex items-center justify-center space-x-2 shadow-lg">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Log Inspection Record</span>
                 </button>
@@ -507,46 +536,48 @@
         </div>
     </div>
 
-    <div id="adminPinModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-        <div id="adminPinCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200">
-            <div class="text-center space-y-2">
-                <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 inline-flex items-center justify-center text-lg">
+    <!-- 4. ADMIN PIN MODAL -->
+    <div id="adminPinModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+        <div id="adminPinCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 sm:p-6 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200 my-auto">
+            <div class="text-center space-y-1.5">
+                <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 inline-flex items-center justify-center text-base">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h3 class="text-lg font-extrabold text-white">Enter PIN</h3>
+                <h3 class="text-base sm:text-lg font-extrabold text-white">Enter PIN</h3>
             </div>
 
             <div>
-                <input type="password" id="modalPinInput" placeholder="Enter PIN"
+                <input type="password" id="modalPinInput" inputmode="numeric" placeholder="Enter PIN"
                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-center text-lg font-bold font-mono-code text-amber-300 focus:outline-none focus:border-amber-400">
             </div>
 
-            <div class="flex items-center space-x-2 pt-2">
-                <button onclick="closeAdminPinModal()" class="w-1/2 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition">
+            <div class="flex items-center space-x-2 pt-1">
+                <button onclick="closeAdminPinModal()" class="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition">
                     Cancel
                 </button>
-                <button onclick="verifyAdminPinModal()" class="w-1/2 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition">
+                <button onclick="verifyAdminPinModal()" class="w-1/2 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition">
                     Authenticate
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="excelUploadModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-        <div id="excelUploadCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5 transform scale-95 transition-transform duration-200">
+    <!-- 5. EXCEL UPLOAD MODAL -->
+    <div id="excelUploadModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+        <div id="excelUploadCard" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-5 sm:p-6 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200 my-auto max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                 <div class="flex items-center space-x-2 text-emerald-400">
-                    <i class="fa-regular fa-file-excel text-xl"></i>
-                    <h3 class="text-base font-bold text-white">Upload Master Dataset Excel</h3>
+                    <i class="fa-regular fa-file-excel text-lg sm:text-xl"></i>
+                    <h3 class="text-sm sm:text-base font-bold text-white">Upload Master Dataset Excel</h3>
                 </div>
-                <button onclick="closeExcelUploadModal()" class="text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeExcelUploadModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
 
             <div class="text-xs text-slate-300 space-y-2">
-                <p>Upload your footwear sole master sheet (.xlsx, .xls, .csv). Recognized column headers:</p>
-                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono-code text-[11px] text-emerald-400 flex flex-wrap gap-1.5 justify-center">
+                <p>Upload footwear sole master sheet (.xlsx, .xls, .csv):</p>
+                <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 font-mono-code text-[10px] sm:text-[11px] text-emerald-400 flex flex-wrap gap-1.5 justify-center">
                     <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-700">Mould No</span>
                     <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-700">Material No</span>
                     <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-700">Sole Weight</span>
@@ -556,18 +587,18 @@
             </div>
 
             <div id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)"
-                class="border-2 border-dashed border-slate-700 hover:border-emerald-500 rounded-2xl p-8 text-center space-y-3 bg-slate-950/50 transition cursor-pointer"
+                class="border-2 border-dashed border-slate-700 hover:border-emerald-500 rounded-2xl p-6 sm:p-8 text-center space-y-2.5 bg-slate-950/50 transition cursor-pointer"
                 onclick="document.getElementById('fileInput').click()">
-                <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-400"></i>
+                <i class="fa-solid fa-cloud-arrow-up text-2xl sm:text-3xl text-emerald-400"></i>
                 <div>
-                    <p class="text-sm font-bold text-slate-200">Click to select or drag & drop file here</p>
-                    <p class="text-xs text-slate-500 mt-1">Processed directly inside browser & automatically synced to cloud</p>
+                    <p class="text-xs sm:text-sm font-bold text-slate-200">Tap to select or drop file here</p>
+                    <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5">Parsed in browser & synced to Google Sheets</p>
                 </div>
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" onchange="handleFileSelect(event)" class="hidden">
             </div>
 
-            <div class="flex items-center justify-between text-xs text-slate-400">
-                <span id="selectedFileName">No file chosen</span>
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+                <span id="selectedFileName" class="truncate max-w-[200px]">No file chosen</span>
                 <button onclick="closeExcelUploadModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-bold">
                     Close
                 </button>
@@ -575,8 +606,10 @@
         </div>
     </div>
 
-    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 left-4 sm:left-auto z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
     <script>
         const ADMIN_PIN = "19114";
         const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx1X5bXzZqupjphmB48-xcnv0XE77XM8NrD7sxXNBnxSDfc2aeVmyQHMtK5vM4MxukH/exec";
@@ -710,7 +743,7 @@
             const tolNote = document.getElementById('toleranceLockNote');
 
             if (sessionUser.isAdmin) {
-                roleBadge.className = "cursor-pointer bg-amber-950 border border-amber-700 text-amber-300 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition";
+                roleBadge.className = "cursor-pointer bg-amber-950 border border-amber-700 text-amber-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition";
                 roleLabel.innerText = "Admin";
                 lockIcon.className = "fa-solid fa-lock-open text-amber-400";
                 uploadBtn.classList.remove('hidden');
@@ -721,7 +754,7 @@
                 tolText.innerText = "UNLOCKED";
                 tolNote.innerText = "Editable by Admin";
             } else {
-                roleBadge.className = "cursor-pointer bg-slate-950 border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition";
+                roleBadge.className = "cursor-pointer bg-slate-950 border border-slate-800 hover:border-slate-700 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition";
                 roleLabel.innerText = "User (Locked)";
                 lockIcon.className = "fa-solid fa-lock text-rose-400";
                 uploadBtn.classList.add('hidden');
@@ -761,7 +794,6 @@
                 updateToleranceDisplay();
                 renderMasterTable();
 
-                // Push new tolerance to Google Sheets
                 if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) {
                     fetch(GOOGLE_SHEET_WEBAPP_URL, {
                         method: "POST",
@@ -803,18 +835,18 @@
                 tr.onclick = () => openInspectionModal(index);
 
                 tr.innerHTML = `
-                    <td class="py-3 px-4 text-center font-mono-code font-bold text-cyan-400 group-hover:text-cyan-300">${item.mouldNo}</td>
-                    <td class="py-3 px-4 text-center font-mono-code text-slate-300">${item.materialNo}</td>
-                    <td class="py-3 px-4 text-center font-mono-code font-bold text-slate-100 text-base">${Number(item.soleWeight).toFixed(1)}</td>
-                    <td class="py-3 px-4 text-center font-mono-code text-slate-400 text-xs">${item.unit}</td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="bg-slate-800 text-slate-200 border border-slate-700 px-2 py-0.5 rounded text-xs font-bold inline-block">${item.imcColor}</span>
+                    <td class="py-2.5 px-3 text-center font-mono-code font-bold text-cyan-400 group-hover:text-cyan-300 whitespace-nowrap">${item.mouldNo}</td>
+                    <td class="py-2.5 px-3 text-center font-mono-code text-slate-300 whitespace-nowrap">${item.materialNo}</td>
+                    <td class="py-2.5 px-3 text-center font-mono-code font-bold text-slate-100 whitespace-nowrap">${Number(item.soleWeight).toFixed(1)}</td>
+                    <td class="py-2.5 px-3 text-center font-mono-code text-slate-400 text-xs whitespace-nowrap">${item.unit}</td>
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span class="bg-slate-800 text-slate-200 border border-slate-700 px-2 py-0.5 rounded text-[11px] font-bold inline-block">${item.imcColor}</span>
                     </td>
-                    <td class="py-3 px-4 text-center" onclick="event.stopPropagation()">
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap" onclick="event.stopPropagation()">
                         <button onclick="openInspectionModal(${index})" 
-                            class="bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white border border-cyan-500/30 px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-1.5 mx-auto">
-                            <i class="fa-solid fa-weight-scale text-xs"></i>
-                            <span>Check Weight</span>
+                            class="bg-cyan-600/20 hover:bg-cyan-600 active:bg-cyan-500 text-cyan-300 hover:text-white border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-1 mx-auto">
+                            <i class="fa-solid fa-weight-scale text-[11px]"></i>
+                            <span>Check</span>
                         </button>
                     </td>
                 `;
@@ -893,7 +925,10 @@
             card.classList.remove('scale-95');
             card.classList.add('scale-100');
 
-            setTimeout(() => manualInput.focus(), 150);
+            // On mobile, keep keyboard from auto-closing modal view
+            setTimeout(() => {
+                manualInput.focus();
+            }, 180);
         }
 
         function closeInspectionModal() {
@@ -935,13 +970,13 @@
             if (isNaN(inputVal) || inputVal <= 0) {
                 deltaGrams.innerText = `0.0 ${activeSelectedSole.unit}`;
                 deltaPercent.innerText = "(0.0%)";
-                deltaGrams.className = "font-mono-code text-slate-200 font-bold text-sm";
+                deltaGrams.className = "font-mono-code text-slate-200 font-bold text-xs sm:text-sm";
 
-                statusBadge.className = "bg-slate-800 text-slate-400 border border-slate-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5";
+                statusBadge.className = "bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5";
                 statusBadge.innerHTML = `<i class="fa-solid fa-circle-minus"></i> <span>Type Machine Weight Above</span>`;
 
                 btnSubmit.disabled = true;
-                btnSubmit.className = "px-5 py-2 rounded-lg text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed transition flex items-center space-x-2";
+                btnSubmit.className = "w-2/3 sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed transition flex items-center justify-center space-x-2";
                 gaugePointer.style.left = "50%";
                 return;
             }
@@ -966,17 +1001,17 @@
             gaugePointer.style.left = `${gaugePct}%`;
 
             if (isWithinTolerance) {
-                deltaGrams.className = "font-mono-code text-emerald-400 font-bold text-sm";
-                statusBadge.className = "bg-emerald-950 text-emerald-300 border border-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-sm shadow-emerald-500/20";
+                deltaGrams.className = "font-mono-code text-emerald-400 font-bold text-xs sm:text-sm";
+                statusBadge.className = "bg-emerald-950 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-sm shadow-emerald-500/20";
                 statusBadge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>PASS (Within Spec)</span>`;
             } else {
-                deltaGrams.className = "font-mono-code text-rose-400 font-bold text-sm";
-                statusBadge.className = "bg-rose-950 text-rose-300 border border-rose-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-sm shadow-rose-500/20";
+                deltaGrams.className = "font-mono-code text-rose-400 font-bold text-xs sm:text-sm";
+                statusBadge.className = "bg-rose-950 text-rose-300 border border-rose-700 px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-sm shadow-rose-500/20";
                 statusBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-400"></i> <span>REJECT (Out of Spec)</span>`;
             }
 
             btnSubmit.disabled = false;
-            btnSubmit.className = "px-5 py-2 rounded-lg text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/20 transition flex items-center space-x-2 cursor-pointer";
+            btnSubmit.className = "w-2/3 sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-400 shadow-lg shadow-cyan-500/20 transition flex items-center justify-center space-x-2 cursor-pointer";
         }
 
         async function submitInspectionRecord() {
@@ -1059,21 +1094,21 @@
                     : 'text-rose-400 bg-rose-950 border-rose-800';
 
                 tr.innerHTML = `
-                    <td class="py-2.5 px-4 text-center text-slate-400">${log.timestamp}</td>
-                    <td class="py-2.5 px-4 text-center font-sans">
+                    <td class="py-2 px-3 text-center text-slate-400 whitespace-nowrap">${log.timestamp}</td>
+                    <td class="py-2 px-3 text-center font-sans whitespace-nowrap">
                         <span class="text-cyan-400 font-mono-code font-bold">${log.mouldNo}</span>
-                        <div class="text-[11px] text-slate-400 font-mono-code">${log.materialNo}</div>
+                        <div class="text-[10px] text-slate-400 font-mono-code">${log.materialNo}</div>
                     </td>
-                    <td class="py-2.5 px-4 text-center font-sans text-slate-200">${log.imcColor}</td>
-                    <td class="py-2.5 px-4 text-center font-sans text-slate-200 font-semibold">${log.inspectorName}</td>
-                    <td class="py-2.5 px-4 text-center font-sans text-slate-400 text-[11px]">${log.role}</td>
-                    <td class="py-2.5 px-4 text-center font-sans text-indigo-400 text-[11px]">${log.machineName}</td>
-                    <td class="py-2.5 px-4 text-center font-sans text-emerald-400 text-[11px]">${log.operatorName}</td>
-                    <td class="py-2.5 px-4 text-center text-slate-300">${Number(log.systemWeight).toFixed(1)}${log.unit}</td>
-                    <td class="py-2.5 px-4 text-center font-bold text-white">${Number(log.manualWeight).toFixed(1)}${log.unit}</td>
-                    <td class="py-2.5 px-4 text-center ${log.delta >= 0 ? 'text-amber-400' : 'text-cyan-400'}">${log.delta >= 0 ? '+' : ''}${Number(log.delta).toFixed(1)}${log.unit}</td>
-                    <td class="py-2.5 px-4 text-center">
-                        <span class="px-2 py-0.5 rounded border text-[10px] font-bold tracking-wider inline-block ${badgeStyle}">
+                    <td class="py-2 px-3 text-center font-sans text-slate-200 whitespace-nowrap">${log.imcColor}</td>
+                    <td class="py-2 px-3 text-center font-sans text-slate-200 font-semibold whitespace-nowrap">${log.inspectorName}</td>
+                    <td class="py-2 px-3 text-center font-sans text-slate-400 text-[10px] whitespace-nowrap">${log.role}</td>
+                    <td class="py-2 px-3 text-center font-sans text-indigo-400 text-[10px] whitespace-nowrap">${log.machineName}</td>
+                    <td class="py-2 px-3 text-center font-sans text-emerald-400 text-[10px] whitespace-nowrap">${log.operatorName}</td>
+                    <td class="py-2 px-3 text-center text-slate-300 whitespace-nowrap">${Number(log.systemWeight).toFixed(1)}${log.unit}</td>
+                    <td class="py-2 px-3 text-center font-bold text-white whitespace-nowrap">${Number(log.manualWeight).toFixed(1)}${log.unit}</td>
+                    <td class="py-2 px-3 text-center ${log.delta >= 0 ? 'text-amber-400' : 'text-cyan-400'} whitespace-nowrap">${log.delta >= 0 ? '+' : ''}${Number(log.delta).toFixed(1)}${log.unit}</td>
+                    <td class="py-2 px-3 text-center whitespace-nowrap">
+                        <span class="px-2 py-0.5 rounded border text-[9px] sm:text-[10px] font-bold tracking-wider inline-block ${badgeStyle}">
                             ${log.status}
                         </span>
                     </td>
@@ -1241,7 +1276,6 @@
                 closeExcelUploadModal();
                 showToast(`Loaded ${parsed.length} soles. Syncing to Google Sheets...`, 'info');
 
-                // Sync new dataset to Google Sheets so all devices get it
                 if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes("REPLACE_WITH_YOUR_DEPLOYMENT_URL")) {
                     fetch(GOOGLE_SHEET_WEBAPP_URL, {
                         method: "POST",
@@ -1312,8 +1346,8 @@
                 icon = 'fa-triangle-exclamation text-rose-400';
             }
 
-            toast.className = `flex items-center space-x-3 px-4 py-3 rounded-xl border shadow-2xl text-xs font-semibold ${bgColors} transition-all duration-300 transform translate-y-2 pointer-events-auto`;
-            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+            toast.className = `flex items-center space-x-2.5 px-3.5 py-2.5 rounded-xl border shadow-2xl text-xs font-semibold ${bgColors} transition-all duration-300 transform translate-y-2 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i><span>${message}</span>`;
 
             container.appendChild(toast);
 
@@ -1325,3 +1359,9 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
